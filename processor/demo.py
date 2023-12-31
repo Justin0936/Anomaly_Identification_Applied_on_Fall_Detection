@@ -26,7 +26,8 @@ class Demo(IO):
 
         # openpose = '{}/examples/openpose/openpose.bin'.format(self.arg.openpose)
         # openpose = OPEN_POSE_PATH+'openpose/bin/OpenPoseDemo.exe'
-        openpose = "/home/yves/projetos/openpose/build/examples/openpose/openpose.bin"
+        # openpose = "/home/yves/projetos/openpose/build/examples/openpose/openpose.bin"
+        openpose = "./openpose/build/examples/openpose/openpose.bin"
         # video_name = path_video.split('/')[len(path_video.split('/'))-1]
         video_name = path_video.split('/')[-1].split('.')[0]
         # print(video_name)

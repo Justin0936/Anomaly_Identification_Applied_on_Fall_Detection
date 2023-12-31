@@ -12,10 +12,15 @@ import torch.nn as nn
 
 # torchlight
 import torchlight
-# from torchlight import str2bool
+#from torchlight import str2bool
 from torchlight.torchlight.io import str2bool
-from torchlight import DictAction
-from torchlight import import_class
+#from torchlight import DictAction
+from torchlight.torchlight.io import DictAction
+#from torchlight import import_class
+from torchlight.torchlight.io import import_class
+
+import os
+#print(os.getcwd())
 
 class IO():
     """
@@ -35,10 +40,12 @@ class IO():
 
         # load arg form config file
         p = parser.parse_args(argv)
+        #print(os.getcwd())
         if p.config is not None:
             # load config file
             with open(p.config, 'r') as f:
-                default_arg = yaml.load(f)
+                #default_arg = yaml.load(f)
+                default_arg = yaml.load(f,Loader=yaml.FullLoader)
 
             # update parser from config file
             key = vars(p).keys()
@@ -52,7 +59,8 @@ class IO():
         self.arg = parser.parse_args(argv)
 
     def init_environment(self):
-        self.io = torchlight.IO(
+        #self.io = torchlight.IO(
+        self.io = torchlight.torchlight.IO(
             self.arg.work_dir,
             save_log=self.arg.save_log,
             print_log=self.arg.print_log)
@@ -60,8 +68,10 @@ class IO():
 
         # gpu
         if self.arg.use_gpu:
-            gpus = torchlight.visible_gpu(self.arg.device)
-            torchlight.occupy_gpu(gpus)
+            #gpus = torchlight.visible_gpu(self.arg.device)
+            gpus = torchlight.torchlight.visible_gpu(self.arg.device)
+            #torchlight.occupy_gpu(gpus)
+            torchlight.torchlight.occupy_gpu(gpus)
             self.gpus = gpus
             self.dev = "cuda:0"
         else:

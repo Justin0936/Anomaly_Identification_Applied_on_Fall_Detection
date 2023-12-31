@@ -1,6 +1,11 @@
 from sklearn.decomposition import TruncatedSVD, PCA
 import numpy as np
-from keras.utils import np_utils
+#from keras.utils import np_utils
+#from TF 2.0, it's been moved with tensorflow. please use this way:
+#from tensorflow.keras.utils import to_categorical
+#to_categorical([0, 1, 2, 3], num_classes=4)
+from tensorflow.keras.utils import to_categorical
+
 import matplotlib.pyplot as plt
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import cohen_kappa_score, roc_curve, auc, confusion_matrix, accuracy_score
@@ -26,7 +31,7 @@ db = 'PRECIS_HAR'
 # db = 'UrFall'
 db = 'UpFall'
 # model = 'AE' #FOREST, SVD, PCA, SVM, AE
-model = 'SVD'  # FOREST, SVD, PCA, SVM, AE
+model = 'AE'  # FOREST, SVD, PCA, SVM, AE
 number_of_experiments = 2
 use_dynamic_threshold = True
 n_components = 47
@@ -75,10 +80,13 @@ def prep2():
     for x in range(fall.shape[0]):
         fall_lbl[x] = 1
 
-    adl_train_lbl = np_utils.to_categorical(adl_train_lbl, n_classes)
-    adl_test_lbl = np_utils.to_categorical(adl_test_lbl, n_classes)
-
-    fall_lbl = np_utils.to_categorical(fall_lbl, n_classes)
+    #adl_train_lbl = np_utils.to_categorical(adl_train_lbl, n_classes)
+    #adl_test_lbl = np_utils.to_categorical(adl_test_lbl, n_classes)
+    adl_train_lbl = to_categorical(adl_train_lbl, n_classes)
+    adl_test_lbl = to_categorical(adl_test_lbl, n_classes)
+    
+    #fall_lbl = np_utils.to_categorical(fall_lbl, n_classes)
+    fall_lbl = to_categorical(fall_lbl, n_classes)
 
     print('adl_train', adl_train.shape)
     print('adl_train_lbl', adl_train_lbl.shape)
@@ -181,7 +189,8 @@ def run_svd(svd, data, lbl, name, mse_thr):
     pred = None
     pred = classify(mse, mse_thr)
 
-    pred = np_utils.to_categorical(pred, n_classes)
+    #pred = np_utils.to_categorical(pred, n_classes)
+    pred = to_categorical(pred, n_classes)
     metrics = get_metrics(lbl, pred, complete=False)
 
     return pred
@@ -387,7 +396,8 @@ def run_ae(model, X, y, mse_thr):
     pred = None
     pred = classify(mse, mse_thr)
 
-    pred = np_utils.to_categorical(pred, n_classes)
+    #pred = np_utils.to_categorical(pred, n_classes)
+    pred = to_categorical(pred, n_classes)
 
     return pred, np.mean(mse)
 
@@ -477,8 +487,10 @@ def run(mse_thr, model='SVD'):
         yhatFall[yhatFall == 1] = 0
         yhatFall[yhatFall == -1] = 1
 
-        pred_test_adl = np_utils.to_categorical(yhat, n_classes)
-        pred_fall = np_utils.to_categorical(yhatFall, n_classes)
+        #pred_test_adl = np_utils.to_categorical(yhat, n_classes)
+        #pred_fall = np_utils.to_categorical(yhatFall, n_classes)
+        pred_test_adl = to_categorical(yhat, n_classes)
+        pred_fall = to_categorical(yhatFall, n_classes)
     else:
         trans = svd.predict(val_adl)
         mse_val_adl = np.mean(np.power(val_adl - trans, 2), axis=1)
